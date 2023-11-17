@@ -1,0 +1,18 @@
+# Dependencias
+node_modules/
+
+# Archivos generados durante la ejecución
+npm-debug.log
+yarn-error.log
+
+# Archivos de configuración locales
+.env
+
+# Archivos de registro
+logs/
+*.log
+
+# Archivos de respaldo
+*.bak
+*.backup
+*.swp
