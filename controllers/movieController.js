@@ -76,6 +76,7 @@ export const createMovie = async (req, res) => {
             title:req.body.title,
             description:req.body.description,
             image:'/uploads/'+req.file.filename,
+            trailer:req.body.trailer,
             year:req.body.year,
             movieDate:req.body.movieDate,
             price:req.body.price,
@@ -98,7 +99,10 @@ export const updateMovie = async (req, res) => {
         const { id } = req.params;
         const movie = await movieModel.findByIdAndUpdate(
             {_id: id},
-            req.body,
+            {
+                ...req.body,
+                image: '/uploads/'+req.file.filename
+            },
             {new:true}
         );
         res.status(200).json(movie);

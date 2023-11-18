@@ -38,11 +38,10 @@ const userSchema = new mongoose.Schema({
 });
 
 const subscriberSchema = new mongoose.Schema({
-    ...userSchema.obj,
     points:{
         type: Number,
     }
 });
 
 export const userModel = mongoose.model('User', userSchema);
-export const subscriberModel = mongoose.model('Subscriber', subscriberSchema);
+export const subscriberModel = userModel.discriminator('Subscriber', subscriberSchema)

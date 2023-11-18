@@ -18,6 +18,10 @@ const movieSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    trailer: {
+        type: String,
+        trim: true
+    },
     year: {
         type: Date,
         required: true

@@ -1,5 +1,6 @@
 import  express from "express";
 import { getDirectors, getDirectorById, createDirector, updateDirector, deleteDirector } from "../controllers/directorController.js";
+import { authenticateToken } from "../middleware/Auth.js";
 
 const directorRouter = express.Router();
 

@@ -18,7 +18,7 @@ movieRouter
     .get("/category/:categoryId", getMoviesByCategoryId)
     .get("/actor/:actorId", getMoviesByActorId)
     .get("/director/:directorId", getMoviesByDirectorId)
-    .put("/:id", updateMovie)
+    .put("/:id", upload.single('image'), updateMovie)
     .post("/", upload.single('image'), createMovie)
     .delete("/:id", deleteMovie)
 

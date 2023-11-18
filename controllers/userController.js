@@ -1,8 +1,9 @@
-import bcrypt from 'bcrypt';
 import { movieModel } from "../models/Movie.js";
 import { ticketModel } from "../models/Ticket.js";
-import { userModel } from "../models/User.js";
+import { userModel, subscriberModel } from "../models/User.js";
+import { generateToken, comparePassword } from '../middleware/Auth.js';
 
+import bcrypt from 'bcrypt';
 
 export const getUsers = async (req, res) => {
     try {
@@ -59,25 +60,44 @@ export const createTicket = async (req, res) => {
 export const registerUser = async (req, res) => {
     try {
         const { email, password, phone, birthday } = req.body;
-        const hash = await bcrypt.hash(password, 10);
-        const user = await userModel.create({
-            email,
-            password: hash,
-            phone,
-            birthday
-        });
-        res.status(201).json(user);
+        
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const user = new userModel({ 
+            email, 
+            password:hashedPassword, 
+            phone, 
+            birthday });
+        await user.save();
+
+        res.status(201).json({ success: true, message: 'Usuario registrado con éxito' });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error al registrar el usuario' });
     }
 }
 
-export const authenticateUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     try {
-        const user = await userModel.create(req.body);
-        res.status(201).json(user);
+        const { email, password } = req.body;
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Usuario no encontrado' });
+        }
+
+        const passwordMatch = await comparePassword(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ success: false, message: 'Contraseña invalida' });
+        }
+
+        const token = generateToken(user);
+        res.status(200).json({ success: true, token });
     } catch (error) {
-        res.status(500).json({message:error.message});
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error al iniciar sesión' });
     }
 }
 
