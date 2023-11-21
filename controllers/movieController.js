@@ -16,7 +16,10 @@ export const getMovies = async (req, res) => {
 export const getMovieById = async (req, res) => {
     try {
         const { id } = req.params;
-        const movie = await movieModel.findById(id);
+        const movie = await movieModel.findById(id)
+        .populate('categories', 'categoryName')
+        .populate('actors', 'actorName')
+        .populate('directors', 'directorName');
         if(!movie){
             return res.status(404).json(`Movie with ID: ${id} not found`);
         }
